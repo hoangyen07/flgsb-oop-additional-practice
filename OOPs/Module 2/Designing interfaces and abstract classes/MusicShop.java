@@ -5,19 +5,48 @@
 // - constructor that initializes both fields
 // - abstract method play() that returns a String
 // - concrete method getInstrumentDetails() that returns information about the instrument
+abstract class Instrument {
+    private String name;
+    protected int year;
 
+    public Instrument(String name, int year) {
+        this.name = name;
+        this.year = year;
+    }
+
+    public abstract String play();
+
+    public String getInstrumentDetails() {
+        return "Instrument " + this.name + " - Year: " + this.year;
+    }
+
+    // Getter for name
+    public String getName() {
+        return name;
+    }
+}
 
 // Step 2: Create an interface Tunable
 // This should include:
 // - abstract method tune() that returns a String
 // - abstract method adjustPitch(boolean up) that returns a String (up means increase pitch)
+interface Tunable {
 
+    public abstract String tune();
+
+    public abstract String adjustPitch(boolean up);
+}
 
 // Step 3: Create an interface Maintainable
 // This should include:
 // - abstract method clean() that returns a String
 // - abstract method inspect() that returns a String
+interface Maintainable {
 
+    public abstract String clean();
+
+    public abstract String inspect();
+}
 
 // Step 4: Create a concrete class StringedInstrument that extends Instrument
 // This should include:
@@ -25,7 +54,30 @@
 // - constructor that initializes name, year, and numberOfStrings
 // - implementation of the abstract play() method
 // - override getInstrumentDetails() to include number of strings
+class StringedInstrument extends Instrument {
 
+    private int numberOfStrings;
+
+    public StringedInstrument(String name, int year, int numberOfStrings) {
+        super(name, year);
+        this.numberOfStrings = numberOfStrings;
+    }
+
+    @Override
+    public String play() {
+        return "Play the instrument successfully.";
+    }
+
+    @Override
+    public String getInstrumentDetails() {
+        return super.getInstrumentDetails() + " number of Strings: " + this.numberOfStrings;
+    }
+
+    // Getter for number of strings
+    public int getNumberOfStrings() {
+        return numberOfStrings;
+    }
+}
 
 // Step 5: Create a concrete class Guitar that extends StringedInstrument 
 // and implements Tunable and Maintainable
@@ -33,7 +85,50 @@
 // - private String guitarType (acoustic, electric, etc.)
 // - constructor that initializes all fields
 // - implementation of all required interface methods
+class Guitar extends StringedInstrument implements Tunable, Maintainable {
 
+    private String guitarType;
+
+    public Guitar(String name, int year, int numberOfStrings, String guitarType) {
+        super(name, year, numberOfStrings); // Call parent constructor
+        this.guitarType = guitarType;
+    }
+
+    // Override play method to be more specific
+    @Override
+    public String play() {
+        return "Playing the " + guitarType + " guitar with " + getNumberOfStrings() + " strings";
+    }
+
+    // Override parent method to add more details
+    @Override
+    public String getInstrumentDetails() {
+        return super.getInstrumentDetails() + ", Type: " + guitarType;
+    }
+
+    // Implement methods from Tunable interface
+    @Override
+    public String tune() {
+        return "Tuning the " + guitarType + " guitar";
+    }
+
+    @Override
+    public String adjustPitch(boolean up) {
+        return up ? "Increasing pitch of the guitar" : "Decreasing pitch of the guitar";
+    }
+
+    // Implement methods from Maintainable interface
+    @Override
+    public String clean() {
+        return "Cleaning the " + guitarType + " guitar";
+    }
+
+    @Override
+    public String inspect() {
+        return "Inspecting the " + guitarType + " guitar from " + year;
+    }
+
+}
 
 // Step 6: Create a concrete class Piano that extends Instrument
 // and implements Tunable and Maintainable
@@ -42,6 +137,50 @@
 // - constructor that initializes all fields
 // - implementation of the abstract play() method
 // - implementation of all required interface methods
+class Piano extends Instrument implements Tunable, Maintainable {
+    // Additional field specific to Piano
+    private boolean isGrand;
+
+    // Constructor
+    public Piano(String name, int year, boolean isGrand) {
+        super(name, year);
+        this.isGrand = isGrand;
+    }
+
+    // Implementation of abstract method from parent
+    @Override
+    public String play() {
+        return "Playing the " + (isGrand ? "grand" : "upright") + " piano";
+    }
+
+    // Override parent method to add more details
+    @Override
+    public String getInstrumentDetails() {
+        return super.getInstrumentDetails() + ", Type: " + (isGrand ? "Grand" : "Upright");
+    }
+
+    // Implement methods from Tunable interface
+    @Override
+    public String tune() {
+        return "Tuning the piano";
+    }
+
+    @Override
+    public String adjustPitch(boolean up) {
+        return up ? "Increasing pitch of the piano" : "Decreasing pitch of the piano";
+    }
+
+    // Implement methods from Maintainable interface
+    @Override
+    public String clean() {
+        return "Cleaning the piano keys and interior";
+    }
+
+    @Override
+    public String inspect() {
+        return "Inspecting the " + (isGrand ? "grand" : "upright") + " piano from " + year;
+    }
+}
 
 
 // Step 7: Create a public class MusicShop to test the classes
@@ -51,3 +190,37 @@
 //   2. Iterates through the array calling play() for each instrument
 //   3. Demonstrates polymorphism by testing if each instrument is Tunable or Maintainable
 //      and if so, calls the appropriate methods
+public class MusicShop {
+
+    public static void main(String[] args) {
+        Instrument[] instruments = new Instrument[2];
+        instruments[0] = new Guitar("Guitar", 2023, 5, "electric");
+        instruments[1] = new Piano("Piano", 2019, true);
+
+        for (Instrument i : instruments) {
+            System.out.println(i.play());
+        }
+
+        // Demonstrate interface type checking and method calling
+        System.out.println("\n===== MAINTAINING INSTRUMENTS =====");
+        for (Instrument instrument : instruments) {
+            System.out.println("Working with: " + instrument.getName());
+
+            // Check if this instrument is Tunable
+            if (instrument instanceof Tunable) {
+                Tunable tunableInstrument = (Tunable) instrument;
+                System.out.println(tunableInstrument.tune());
+                System.out.println(tunableInstrument.adjustPitch(true));
+            }
+
+            // Check if this instrument is Maintainable
+            if (instrument instanceof Maintainable) {
+                Maintainable maintainableInstrument = (Maintainable) instrument;
+                System.out.println(maintainableInstrument.clean());
+                System.out.println(maintainableInstrument.inspect());
+            }
+
+            System.out.println("-----");
+        }
+    }
+}
