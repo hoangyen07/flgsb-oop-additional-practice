@@ -1,4 +1,6 @@
 // Student class to store and manage student information
+package solution;
+
 public class Student {
     // Step 1: Private variables for student data
     private String studentId;

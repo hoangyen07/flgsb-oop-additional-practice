@@ -3,12 +3,19 @@ public class TestEncapsulation {
     public static void main(String[] args) {
         // Step 1: Create two instances of the Employee class
         // One using the parameterized constructor and one using default constructor with setters
-        
+        Employee employee_1 = new Employee();
+        Employee employee_2 = new Employee("Henry", 23, 30.6);
+        employee_1.setName("Lisa");
+        employee_1.setAge(28);
+
         // Step 2: Print details of both employees
-        
+        employee_1.printEmployeeDetail();
+        employee_2.printEmployeeDetail();
         // Step 3: Try setting invalid values (null name, age outside range, negative salary)
         // and see if your validation works
-        
+        employee_1.setName(null);
+        employee_1.setAge(-1);
+        employee_1.printEmployeeDetail();
         // Step 4: Give both employees a 10% raise and display their details again
         
         // Step 5: Clone the first employee and display the cloned employee details
